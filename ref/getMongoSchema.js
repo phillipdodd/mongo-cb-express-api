@@ -2,11 +2,12 @@
  * ? Last Updated - 9/15/19 - phillip dodd
  * @description - generates an object used for creating mongodb schema.
  * ! put on ApplicationEntity eType
+ * todo needs to be able to accept either an etype or specific entity
  * @returns {Object}
  */
-function getMongoSchema() {
+function getMongoSchema(etype) {
     var DEBUG = true;
-    var PREFIX = "[" + this.getEntityTypeName() + "](getMongoSchema): ";
+    var PREFIX = "[" + etype.getEntityTypeName() + "](getMongoSchema): ";
     //? Use like: log("DEBUG", "Debug message goes here") or log("INFO", "Info Message goes here")
     var log = createLoggerForPrefix(PREFIX);
 
@@ -21,7 +22,7 @@ function getMongoSchema() {
         var result = {};
 
         //? getAllForEType() Returns an enumeration
-        var attributes = AttributeDescription.getAllForEType(this.getType());
+        var attributes = AttributeDescription.getAllForEType(etype.getType());
         var count = attributes.count();
         var dataType;
         for (var i = 1; i <= count; i++) {

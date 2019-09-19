@@ -4,9 +4,9 @@
  * ! put on ApplicationEntity eType
  * @returns {Object}
  */
-function mongify() {
+function mongify(entity) {
     var DEBUG = true;
-    var PREFIX = "[" + this.getEntityTypeName() + "](getMongoSchema): ";
+    var PREFIX = "[" + entity.getEntityTypeName() + "](mongify): ";
     //? Use like: log("DEBUG", "Debug message goes here") or log("INFO", "Info Message goes here")
     var log = createLoggerForPrefix(PREFIX);
 
@@ -21,19 +21,23 @@ function mongify() {
         var result = {};
 
         //? getAllForEType() Returns an enumeration
-        var attributes = AttributeDescription.getAllForEType(this.getType());
+        var attributes = AttributeDescription.getAllForEType(entity.getType());
         var count = attributes.count();
         var dataType, qualifiedName;
         for (var i = 1; i <= count; i++) {
             dataType = attributes(i).getDataType();
             qualifiedName = attributes(i).getQualifiedName();
-            var value = this.getQualifiedAttribute(qualifiedName);
+            var value = entity.getQualifiedAttribute(qualifiedName);
             if (value) {
                 if (~dataType.indexOf("Set/") && value && value.count) {
                     var oidArray = [];
                     var valueEnum = value.elements();
                     for (var j = 1; j <= value.count; j++) {
-                        oidArray.push(valueEnum(j) + "");
+                        if (qualifiedName == "customAttributes.uga_invoice_item_set") {
+                            oidArray.push(mongify(valueEnum(j)));
+                        } else {
+                            oidArray.push(valueEnum(j) + "");
+                        }
                     }
                     result[qualifiedName] = oidArray;
                 } else {
