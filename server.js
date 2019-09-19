@@ -38,22 +38,22 @@ mongoose
     .catch(err => logger.error(err));
     
 function testCalls() {
-    axios({
-        method: 'post',
-        //todo why doesn't this error if i send the wrong data to the wrong schema?
-        url: `http://localhost:${serverPort}/create/uga_Invoice`,
-        data: DATA
-    });
-
     // axios({
     //     method: 'post',
-    //     url: `http://localhost:${serverPort}/query/uga_invoice_item`,
-    //     // data: {
-    //     //     query: {"portalID": "derp"}
-    //     // }
-    // }).then(response => {
-    //     console.dir(response.data)
-    // });  
+    //     //todo why doesn't this error if i send the wrong data to the wrong schema?
+    //     url: `http://localhost:${serverPort}/create/uga_Invoice`,
+    //     data: DATA
+    // });
+
+    axios({
+        method: 'post',
+        url: `http://1e8ef0d8.ngrok.io/query/cageCard`,
+        // data: {
+        //     query: {id: 'derp'}
+        // }
+    }).then(response => {
+        console.dir(response.data)
+    });  
 }
 
 var DATA = {
