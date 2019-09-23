@@ -12,6 +12,7 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(require('./middleware/removeEmptyProperties'));
 
 //* Apply Routes
 require('./api/routes/mongoRoutes')(app);

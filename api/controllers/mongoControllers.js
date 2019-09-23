@@ -4,8 +4,12 @@ exports.create = async (req, res) => {
     try {
         logger.info(`Receiving post request to create entity: ${req.params.entityType} using ${JSON.stringify(req.body)}`);
         let entity = require(`../../models/${req.params.entityType}`);
-        await entity.create(req.body);
-        res.json({message: "success"})
+        try {
+            await entity.create(req.body);
+        } catch (e) {
+            res.json({error: e})
+        }
+        res.json(req.body)
         logger.info(`Successfully created with JSON: ${JSON.stringify(req.body)}`);
     } catch (e) {
         throw e;
