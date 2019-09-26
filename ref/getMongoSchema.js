@@ -13,13 +13,9 @@ function getMongoSchema(etype) {
 
     try {
 
-        //* Assertions and Declarations
-
-        if (DEBUG) log("DEBUG", "Passed Assertion Block");
-
         //* Execution
 
-        var result = {};
+        var result = {"oid": "String"};
 
         //? getAllForEType() Returns an enumeration
         var attributes = AttributeDescription.getAllForEType(etype.getType());
