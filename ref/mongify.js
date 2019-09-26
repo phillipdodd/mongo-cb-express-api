@@ -18,7 +18,7 @@ function mongify(entity) {
 
         //* Execution
 
-        var result = {};
+        var result = {'oid': entity + ""};
 
         //? getAllForEType() Returns an enumeration
         var attributes = AttributeDescription.getAllForEType(entity.getType());
