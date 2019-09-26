@@ -1,23 +1,23 @@
-//var payload = JSON.stringify(mongify(CustomUtils.uga_findOne("_uga_Invoice", "id='INVOICE00010887'")), null, null)
-// var payload = mongify(CustomUtils.uga_findOne("_uga_Invoice", "id='INVOICE00010848'"));
+var historyItems = ApplicationEntity
+    .getResultSet("_uga_cageCard_history")
+    .query("customAttributes.cageCard.status.ID='Active'")
+    .top(10);
 
-
-var invoices = ApplicationEntity.getResultSet("_uga_Invoice").query("customAttributes.uga_invoice_item_set is not null")
-
-CustomUtils.uga_entitySetMap(invoices, function(inv) {
-    convertify(inv);
+CustomUtils.uga_entitySetMap(historyItems, function (item) {
+    convertify(item);
 });
 
-function convertify(invoice) {
-    if (invoice) {
-        var payload = mongify(invoice);
+function convertify(entity) {
+    var NGROKURL = "http://b2bf688c.ngrok.io";
+    if (entity) {
+        var payload = JSON.stringify(mongify(entity), null, null)
         if (payload) {
             var xmlHttp = new ActiveXObject("MSXML2.XMLHTTP.6.0")
-            xmlHttp.open("POST", "http://1e8ef0d8.ngrok.io/create/uga_Invoice", false)
+            xmlHttp.open("POST", NGROKURL + "/create/uga_cageCard_history", false)
             xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-            xmlHttp.send(JSON.stringify(payload, null, null));
+            xmlHttp.send(payload);
         } else {
-            log("WARN", "Unable to send http request for " + invoice.ID)
+            log("WARN", "Unable to send http request for " + entity.ID)
         }
     }
 }
@@ -42,7 +42,7 @@ function mongify(entity) {
 
         //* Execution
 
-        var result = {};
+        var result = {"oid": entity + ""};
 
         //? getAllForEType() Returns an enumeration
         var attributes = AttributeDescription.getAllForEType(entity.getType());
