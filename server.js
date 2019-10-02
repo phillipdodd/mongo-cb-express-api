@@ -44,28 +44,6 @@ if (cluster.isMaster) {
             logger.info(`Cluster ${cluster.worker.id} Connected to db`);
             http.createServer(app).listen(serverPort);
             logger.info(`Cluster ${cluster.worker.id} listening on port ${serverPort}`);
-            
-            // testCalls();
         })
         .catch(err => logger.error(err));
 }
-
-    
-// function testCalls() {
-//     axios({
-//         method: 'post',
-//         //todo why doesn't this error if i send the wrong data to the wrong schema?
-//         url: `http://localhost:${serverPort}/create/uga_Invoice`,
-//         data: DATA
-//     });
-
-//     // axios({
-//     //     method: 'post',
-//     //     url: `http://localhost:${serverPort}/query/uga_invoice_item`,
-//     //     // data: {
-//     //     //     query: {"portalID": "derp"}
-//     //     // }
-//     // }).then(response => {
-//     //     console.dir(response.data)
-//     // });  
-// }
