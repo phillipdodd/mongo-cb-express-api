@@ -4,6 +4,7 @@ module.exports = mongoose.model(
     'CageCard',
     new Schema({
         "activities": [String],
+        "oid": String,
         "customAttributes.group": String,
         "customAttributes.animalUser": String,
         "customAttributes.animalID": String,

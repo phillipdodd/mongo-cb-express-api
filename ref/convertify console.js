@@ -1,14 +1,13 @@
-var historyItems = ApplicationEntity
-    .getResultSet("_uga_cageCard_history")
-    .query("customAttributes.cageCard.status.ID='Active'")
-    .top(10);
+var cageCards = ApplicationEntity
+    .getResultSet("_CageCard")
+    .query("status.ID='Active'");
 
 CustomUtils.uga_entitySetMap(historyItems, function (item) {
     convertify(item);
 });
 
 function convertify(entity) {
-    var NGROKURL = "http://b2bf688c.ngrok.io";
+    var NGROKURL = "http://75f322e8.ngrok.io";
     if (entity) {
         var payload = JSON.stringify(mongify(entity), null, null)
         if (payload) {
