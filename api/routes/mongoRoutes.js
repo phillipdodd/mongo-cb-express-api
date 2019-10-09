@@ -1,8 +1,8 @@
 var mongoControllers = require('../controllers/mongoControllers');
-module.exports = app => {
-    app.route('/create/:entityType')
+module.exports = (app, mongoConnection) => {
+    app.route('/mongo/create/:entityType')
         .post(mongoControllers.create);
     
-    app.route('/query/:entityType')
+    app.route('/mongo/query/:entityType')
         .post(mongoControllers.query);
 }
