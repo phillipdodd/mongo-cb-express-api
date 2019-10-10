@@ -53,6 +53,10 @@ if (cluster.isMaster) {
         const clusterUrl = process.env.COUCH_CLUSTER_URL || localhost;
         return new Promise(resolve => {
             const cluster = couchbase.Cluster(clusterUrl);
+            cluster.authenticate(
+                process.env.COUCH_USER,
+                process.env.COUCH_PASS
+            );
             resolve(cluster);
         });
 
