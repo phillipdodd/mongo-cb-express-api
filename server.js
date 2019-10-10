@@ -48,32 +48,41 @@ if (cluster.isMaster) {
             .catch(err => logger.error(err));
     }
 
-    function connectCouch() {
+    async function connectCouch() {
         
         const clusterUrl = process.env.COUCH_CLUSTER_URL || localhost;
-        return new Promise(resolve => {
-            const cluster = couchbase.Cluster(clusterUrl);
-            cluster.authenticate(
-                process.env.COUCH_USER,
-                process.env.COUCH_PASS
-            );
-            resolve(cluster);
-        });
+        let cluster = new couchbase.Cluster(clusterUrl);
+        cluster.authenticate(
+            process.env.COUCH_USER,
+            process.env.COUCH_PASS
+        );
+        return cluster;
+        // return new Promise(resolve => {
+        //     resolve(cluster);
+        // });
 
     }
 
-    }
-    Promise.all([
-        connectMongo(),
-        connectCouch()
-    ]).then(connections => {
-
-        const [mongoConnection, cbClusterConnection] = connections;
-
+    connectCouch().then(cbClusterConnection => {
         //* Apply Routes
-        require('./api/routes/mongoRoutes')(app, mongoConnection);
         require('./api/routes/couchRoutes')(app, cbClusterConnection);
-
+    
         http.createServer(app).listen(serverPort);
         logger.info(`Cluster ${cluster.worker.id} listening on port ${serverPort}`);
-    });
+    })
+
+    // Promise.all([
+    //     connectMongo(),
+    //     connectCouch()
+    // ]).then(connections => {
+
+    //     const [mongoConnection, cbClusterConnection] = connections;
+
+    //     //* Apply Routes
+    //     require('./api/routes/mongoRoutes')(app, mongoConnection);
+    //     require('./api/routes/couchRoutes')(app, cbClusterConnection);
+
+    //     http.createServer(app).listen(serverPort);
+    //     logger.info(`Cluster ${cluster.worker.id} listening on port ${serverPort}`);
+    // });
+}
