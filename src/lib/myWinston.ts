@@ -1,6 +1,5 @@
-const path = require('path');
-const { createLogger, format, transports } = require('winston');
-const { combine, colorize, json, timestamp, label, printf } = format;
+import {createLogger, format, transports} from 'winston';
+const {combine, colorize, json, timestamp, label, printf} = format;
 
 const myFormat = printf(info => {
     return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
@@ -19,17 +18,13 @@ function createLoggerFor(labelName) {
             new transports.File({
                 level: 'debug',
                 filename: `./logs/${new Date().toLocaleDateString().replace(/\//g,"-")}.log`,
-                handleExceptions: 'false',
-                json: true,
+                handleExceptions: false,
                 maxsize: 5242880, //5MB
-                maxFiles: 5,
-                colorize: false
+                maxFiles: 5
             }),
             new transports.Console({
                 level: 'debug',
                 handleExceptions: true,
-                json: false,
-                colorize: true,
                 format: combine(
                     colorize(),
                     label({ label: labelName }),

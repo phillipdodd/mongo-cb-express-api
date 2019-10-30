@@ -5,8 +5,7 @@ import * as mongoose from 'mongoose';
 import * as http from 'http';
 import express from 'express';
 const app = express();
-import createLoggerFor from './lib/myWinston';
-const logger = createLoggerFor('server.js');
+const logger = require('../../lib/myWinston')('server.js');
 
 if (cluster.isMaster) {
     var cpuCount = require('os').cpus().length;

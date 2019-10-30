@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import * as mongoose from 'mongoose';
+import {Schema} from 'mongoose';
 module.exports = mongoose.model(
     'uga_cageCard_history',
     new Schema({
