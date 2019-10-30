@@ -1,21 +1,22 @@
 {
   "name": "mongobrain",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "main": "dist/index.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "prebuild": "./node_modules/.bin/eslint .",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ugaovpr/mongobrain.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "phillip dodd",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ugaovpr/mongobrain/issues"
@@ -30,5 +31,11 @@
     "mongoose": "^5.7.1",
     "omit-empty": "^1.0.0",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
+    "eslint": "^6.6.0",
+    "typescript": "^3.6.4"
   }
 }

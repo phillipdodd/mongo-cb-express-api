@@ -1,0 +1,1 @@
+Using Project Structure foud [here](https://github.com/Microsoft/TypeScript-Node-Starter)
