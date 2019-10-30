@@ -15,35 +15,74 @@ if (cluster.isMaster) {
     const express = require('express');
     const app = express();
     const mongoose = require('mongoose');
-    
-    //? used for testing
-    const axios = require('axios');
-    
+    const couchbase = require('couchbase');
+
     //* Apply Middleware
     const bodyParser = require('body-parser');
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
     app.use(require('./middleware/removeEmptyProperties'));
     
-    //* Apply Routes
-    require('./api/routes/mongoRoutes')(app);
+    
     
     const serverPort = process.env.SSL_PORT || 4000;
     // var sslOptions = {
     //     pfx: fs.readFileSync(process.env.SSL_PFX),
     //     passphrase: process.env.SSL_PASS
     // }
+
+    function connectMongo() {
+        
+        const mongodbURL = process.env.MONGO_URL || "localhost";
+        const mongodbPort = process.env.MONGO_PORT || "27017";
+        const mongodbName = process.env.MONGO_DBNAME || 'phortal';
+        
+        return mongoose
+            .connect(`mongodb://${mongodbURL}:${mongodbPort}/${mongodbName}`, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            })
+            .then(r => {
+                logger.info(`Cluster ${cluster.worker.id} Connected to MongoDB`);
+            })
+            .catch(err => logger.error(err));
+    }
+
+    async function connectCouch() {
+        
+        const clusterUrl = process.env.COUCH_CLUSTER_URL || localhost;
+        let cluster = new couchbase.Cluster(clusterUrl);
+        cluster.authenticate(
+            process.env.COUCH_USER,
+            process.env.COUCH_PASS
+        );
+        return cluster;
+        // return new Promise(resolve => {
+        //     resolve(cluster);
+        // });
+
+    }
+
+    connectCouch().then(cbClusterConnection => {
+        //* Apply Routes
+        require('./api/routes/couchRoutes')(app, cbClusterConnection);
     
-    const dbURL = process.env.MONGO_URL || "localhost";
-    const dbPort = process.env.MONGO_PORT || "27017";
-    const dbName = process.env.MONGO_DBNAME || 'phortal';
-    
-    mongoose
-        .connect(`mongodb://${dbURL}:${dbPort}/${dbName}`, {useNewUrlParser: true, useUnifiedTopology: true})
-        .then(r => {
-            logger.info(`Cluster ${cluster.worker.id} Connected to db`);
-            http.createServer(app).listen(serverPort);
-            logger.info(`Cluster ${cluster.worker.id} listening on port ${serverPort}`);
-        })
-        .catch(err => logger.error(err));
+        http.createServer(app).listen(serverPort);
+        logger.info(`Cluster ${cluster.worker.id} listening on port ${serverPort}`);
+    })
+
+    // Promise.all([
+    //     connectMongo(),
+    //     connectCouch()
+    // ]).then(connections => {
+
+    //     const [mongoConnection, cbClusterConnection] = connections;
+
+    //     //* Apply Routes
+    //     require('./api/routes/mongoRoutes')(app, mongoConnection);
+    //     require('./api/routes/couchRoutes')(app, cbClusterConnection);
+
+    //     http.createServer(app).listen(serverPort);
+    //     logger.info(`Cluster ${cluster.worker.id} listening on port ${serverPort}`);
+    // });
 }
